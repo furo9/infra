@@ -14,8 +14,20 @@ resource "docker_image" "main" {
   build {
     context = ".."
   }
+
+  lifecycle {
+    replace_triggered_by = [terraform_data.rebuild]
+  }
 }
 
 resource "random_id" "docker_image" {
   byte_length = 4
+
+  keepers = {
+    rebuild = terraform_data.rebuild.output
+  }
+}
+
+resource "terraform_data" "rebuild" {
+  input = uuid()
 }
