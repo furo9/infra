@@ -1,6 +1,6 @@
 resource "aws_efs_file_system" "main" {
   performance_mode = "generalPurpose"
-  throughput_mode  = "bursting"
+  throughput_mode  = "elastic"
 
   tags = {
     Name = "${var.name}-${var.environment}"
