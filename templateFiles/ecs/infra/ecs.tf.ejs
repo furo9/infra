@@ -27,6 +27,16 @@ resource "aws_ecs_task_definition" "main" {
           hostPort      = 80
         }
       ]
+      <% if (volumes.length > 0) { %>
+      mountPoints = [
+        <% volumes.forEach((volume) => { %>
+        {
+          sourceVolume  = "<%= volume.fileSystemId %>"
+          containerPath = "<%= volume.containerPath %>"
+        }
+        <% }) %>
+      ]
+      <% } %>
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -37,6 +47,21 @@ resource "aws_ecs_task_definition" "main" {
       }
     }
   ])
+
+  <% volumes.forEach((volume) => { %>
+  volume {
+    name = "<%= volume.fileSystemId %>"
+
+    efs_volume_configuration {
+      file_system_id     = "<%= volume.fileSystemId %>"
+      transit_encryption = "ENABLED"
+
+      authorization_config {
+        access_point_id = "<%= volume.accessPointId %>"
+      }
+    }
+  }
+  <% }) %>
 }
 
 resource "aws_ecs_service" "main" {

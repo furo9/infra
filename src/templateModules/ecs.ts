@@ -10,6 +10,7 @@ export default {
   async getDefaultConfig() {
     return {
       additionalCertificateArns: [],
+      volumes: [],
     };
   },
   async getTerraformVariables() {
