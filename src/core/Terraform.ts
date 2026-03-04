@@ -1,5 +1,5 @@
 import fs from 'fs-extra';
-import { mapKeys, snakeCase } from 'lodash-es';
+import { mapKeys } from 'lodash-es';
 
 import { Execution } from '@/core/Execution';
 
@@ -13,7 +13,7 @@ export class Terraform {
   async generateVariableFile() {
     const filePath = this.execution.outputFolder!.resolve('infra/.auto.tfvars.json');
     const variables = this.execution.template!.terraformVariables;
-    const snakeCaseVariables = mapKeys(variables, (value, key) => snakeCase(key));
+    const snakeCaseVariables = mapKeys(variables, (value, key) => key.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase());
     const variablesJson = JSON.stringify(snakeCaseVariables, null, 2);
     await fs.writeFile(filePath, variablesJson);
   }
