@@ -1,6 +1,12 @@
 resource "aws_amplify_app" "main" {
   name                 = "${var.name}-${var.environment}"
   iam_service_role_arn = aws_iam_role.main.arn
+
+  custom_rule {
+    source = "</^[^.]+$|\\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|woff2|ttf|map|json|webp)$)([^.]+$)/>"
+    target = "/index.html"
+    status = "200"
+  }
 }
 
 resource "aws_amplify_branch" "main" {
